@@ -726,6 +726,7 @@ async function importCSV(input) {
   const status=document.getElementById('import-status');
   status.className='status loading';status.textContent='Reading file...';
   const text=await file.text();
+  console.log('File read, length:', text.length, 'First 100 chars:', text.substring(0,100));
   const lines=text.trim().split('\n');
   const hdrs=lines[0].split(',').map(h=>h.trim().replace(/"/g,'').toUpperCase());
   const di=hdrs.findIndex(h=>h.includes('DATE'));
