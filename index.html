@@ -107,6 +107,16 @@ td select:hover{border-color:#ddd;background:#fafaf8}
 .page-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
 
 @media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
+
+.resizable-table { table-layout: fixed; width: 100%; }
+.resizable-table th { position: relative; overflow: hidden; white-space: nowrap; }
+.resizable-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.col-resizer {
+  position: absolute; right: 0; top: 0; width: 5px; height: 100%;
+  cursor: col-resize; user-select: none; z-index: 1;
+  background: transparent;
+}
+.col-resizer:hover, .col-resizer.resizing { background: #2563eb; opacity: 0.5; }
 </style>
 </head>
 <body>
@@ -115,7 +125,17 @@ td select:hover{border-color:#ddd;background:#fafaf8}
   <div class="sidebar">
     <div class="logo-area">
       <svg width="100%" viewBox="0 0 400 390" xmlns="http://www.w3.org/2000/svg" style="display:block;max-width:190px;margin:0 auto">
-<style>.ll{stroke:#1a1a1a;fill:none;stroke-linecap:round}.lm{font-family:'Inter',sans-serif;font-size:26px;font-weight:700;letter-spacing:4px;fill:#1a1a1a;text-anchor:middle}.ls{font-family:Georgia,serif;font-size:12px;fill:#1a1a1a;text-anchor:middle;font-style:italic;letter-spacing:1px}</style>
+<style>.ll{stroke:#1a1a1a;fill:none;stroke-linecap:round}.lm{font-family:'Inter',sans-serif;font-size:26px;font-weight:700;letter-spacing:4px;fill:#1a1a1a;text-anchor:middle}.ls{font-family:Georgia,serif;font-size:12px;fill:#1a1a1a;text-anchor:middle;font-style:italic;letter-spacing:1px}
+.resizable-table { table-layout: fixed; width: 100%; }
+.resizable-table th { position: relative; overflow: hidden; white-space: nowrap; }
+.resizable-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.col-resizer {
+  position: absolute; right: 0; top: 0; width: 5px; height: 100%;
+  cursor: col-resize; user-select: none; z-index: 1;
+  background: transparent;
+}
+.col-resizer:hover, .col-resizer.resizing { background: #2563eb; opacity: 0.5; }
+</style>
 <line x1="60" y1="155" x2="340" y2="155" class="ll" stroke-width="0.7"/>
 <line x1="40" y1="210" x2="360" y2="210" class="ll" stroke-width="0.7"/>
 <line x1="80" y1="290" x2="340" y2="290" class="ll" stroke-width="0.7"/>
@@ -212,10 +232,24 @@ td select:hover{border-color:#ddd;background:#fafaf8}
           </div>
         </div>
         <div style="overflow-x:auto;max-height:calc(100vh - 200px);overflow-y:auto">
-          <table>
+          <table class="resizable-table" id="tx-table">
+            <colgroup>
+              <col id="col-date" style="width:100px">
+              <col id="col-desc" style="width:280px">
+              <col id="col-amt" style="width:100px">
+              <col id="col-proj" style="width:160px">
+              <col id="col-cat" style="width:160px">
+              <col id="col-sub" style="width:140px">
+              <col id="col-notes" style="width:140px">
+            </colgroup>
             <thead><tr>
-              <th>Date</th><th>Description</th><th style="text-align:right">Amount</th>
-              <th>Project</th><th>Category</th><th>Subcategory</th><th>Notes</th>
+              <th onclick="sortBy('date')" style="cursor:pointer;user-select:none">Date <span id="sort-date"></span><div class="col-resizer" data-col="col-date"></div></th>
+              <th onclick="sortBy('description')" style="cursor:pointer;user-select:none">Description <span id="sort-description"></span><div class="col-resizer" data-col="col-desc"></div></th>
+              <th onclick="sortBy('amount')" style="text-align:right;cursor:pointer;user-select:none">Amount <span id="sort-amount"></span><div class="col-resizer" data-col="col-amt"></div></th>
+              <th onclick="sortBy('project')" style="cursor:pointer;user-select:none">Project <span id="sort-project"></span><div class="col-resizer" data-col="col-proj"></div></th>
+              <th onclick="sortBy('category')" style="cursor:pointer;user-select:none">Category <span id="sort-category"></span><div class="col-resizer" data-col="col-cat"></div></th>
+              <th onclick="sortBy('subcategory')" style="cursor:pointer;user-select:none">Subcategory <span id="sort-subcategory"></span><div class="col-resizer" data-col="col-sub"></div></th>
+              <th>Notes<div class="col-resizer" data-col="col-notes"></div></th>
             </tr></thead>
             <tbody id="tx-body"></tbody>
           </table>
@@ -448,6 +482,19 @@ function getFiltered() {
     if(amin !== null && Math.abs(t.amount) < amin) return false;
     if(amax !== null && Math.abs(t.amount) > amax) return false;
     return true;
+  }).sort((a, b) => {
+    let va = a[sortCol] ?? '';
+    let vb = b[sortCol] ?? '';
+    if(sortCol === 'amount') {
+      va = parseFloat(va) || 0;
+      vb = parseFloat(vb) || 0;
+    } else {
+      va = String(va).toLowerCase();
+      vb = String(vb).toLowerCase();
+    }
+    if(va < vb) return sortDir === 'asc' ? -1 : 1;
+    if(va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
   });
 }
 
@@ -465,9 +512,66 @@ function clearFilters() {
   renderTx();
 }
 
+
+let sortCol = 'date';
+let sortDir = 'desc';
+
+function sortBy(col) {
+  if(sortCol === col) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortCol = col;
+    sortDir = col === 'date' ? 'desc' : 'asc';
+  }
+  updateSortIndicators();
+  currentPage = 1;
+  showPage();
+}
+
+function updateSortIndicators() {
+  ['date','description','amount','project','category','subcategory'].forEach(col => {
+    const el = document.getElementById('sort-' + col);
+    if(!el) return;
+    if(col === sortCol) {
+      el.textContent = sortDir === 'asc' ? ' ↑' : ' ↓';
+      el.style.color = '#2563eb';
+    } else {
+      el.textContent = '';
+    }
+  });
+}
+
+
+// ── Column resizing ───────────────────────────────────────────────────────────
+function initResizers() {
+  document.querySelectorAll('.col-resizer').forEach(resizer => {
+    let startX, startW, col;
+    resizer.addEventListener('mousedown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      col = document.getElementById(resizer.dataset.col);
+      startX = e.pageX;
+      startW = col ? col.offsetWidth : 100;
+      resizer.classList.add('resizing');
+      const onMove = e => {
+        const w = Math.max(50, startW + (e.pageX - startX));
+        if(col) col.style.width = w + 'px';
+      };
+      const onUp = () => {
+        resizer.classList.remove('resizing');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+}
+
 function renderTx() { currentPage=1; showPage(); }
 
 function showPage() {
+  setTimeout(initResizers, 50);
   const filtered=getFiltered();
   const total=filtered.length;
   const pages=Math.ceil(total/PAGE_SIZE);
@@ -625,9 +729,10 @@ async function importCSV(input) {
   const lines=text.trim().split('\n');
   const hdrs=lines[0].split(',').map(h=>h.trim().replace(/"/g,'').toUpperCase());
   const di=hdrs.findIndex(h=>h.includes('DATE'));
-  const dsi=hdrs.findIndex(h=>h.includes('DESC'));
+  // Accept NAME (US Bank) or DESCRIPTION or DESC
+  const dsi=hdrs.findIndex(h=>h==='NAME'||h.includes('DESC'));
   const ai=hdrs.findIndex(h=>h.includes('AMOUNT')||h.includes('AMT'));
-  if(di<0||dsi<0||ai<0){status.className='status error';status.textContent='Could not find DATE, DESCRIPTION, AMOUNT columns.';return;}
+  if(di<0||dsi<0||ai<0){status.className='status error';status.textContent='Could not find DATE, NAME/DESCRIPTION, AMOUNT columns.';return;}
   const existing=new Set(allTx.map(t=>t.date+'|'+t.description.trim()+'|'+t.amount));
   const newRows=[];
   for(let i=1;i<lines.length;i++){
@@ -724,7 +829,17 @@ function generatePDF() {
     tr:last-child td { border-bottom: none; }
     .footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid #e8e8e4; font-size: 9px; color: #bbb; display: flex; justify-content: space-between; }
     @media print { body { padding: 0; } @page { margin: 24px; } }
-  </style>
+  
+.resizable-table { table-layout: fixed; width: 100%; }
+.resizable-table th { position: relative; overflow: hidden; white-space: nowrap; }
+.resizable-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.col-resizer {
+  position: absolute; right: 0; top: 0; width: 5px; height: 100%;
+  cursor: col-resize; user-select: none; z-index: 1;
+  background: transparent;
+}
+.col-resizer:hover, .col-resizer.resizing { background: #2563eb; opacity: 0.5; }
+</style>
   </head><body>
   <div class="header">
     <div>
@@ -1061,7 +1176,17 @@ function generatePDF() {
     tr:last-child td { border-bottom: none; }
     .footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid #e8e8e4; font-size: 9px; color: #bbb; display: flex; justify-content: space-between; }
     @media print { body { padding: 0; } @page { margin: 24px; } }
-  </style>
+  
+.resizable-table { table-layout: fixed; width: 100%; }
+.resizable-table th { position: relative; overflow: hidden; white-space: nowrap; }
+.resizable-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.col-resizer {
+  position: absolute; right: 0; top: 0; width: 5px; height: 100%;
+  cursor: col-resize; user-select: none; z-index: 1;
+  background: transparent;
+}
+.col-resizer:hover, .col-resizer.resizing { background: #2563eb; opacity: 0.5; }
+</style>
   </head><body>
   <div class="header">
     <div>
