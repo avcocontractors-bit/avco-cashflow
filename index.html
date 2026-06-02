@@ -1062,8 +1062,16 @@ function renderSettingsLists() {
     pl.innerHTML = '';
     PROJECTS.forEach(p => {
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f0ec;font-size:12px';
-      row.innerHTML = `<span>${p}</span><button onclick="removeProject('${p.replace(/'/g,"\'")}')" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">×</button>`;
+      row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f0f0ec;font-size:12px';
+      const safeP = p.replace(/'/g,"\'");
+      row.innerHTML = `
+        <input type="text" value="${p}" 
+          onblur="renameProject('${safeP}', this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="flex:1;font-size:12px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;outline:none;cursor:pointer"
+          onfocus="this.style.borderColor='#2563eb';this.style.background='#fff'"
+          onblurfocus="this.style.borderColor='transparent';this.style.background='transparent'">
+        <button onclick="removeProject('${safeP}', false)" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0">×</button>`;
       pl.appendChild(row);
     });
   }
@@ -1146,6 +1154,29 @@ async function updateBudget(name, val) {
   try { await sb.from('projects').update({budget}).eq('name', name); } catch(e) {}
   renderPnL();
   renderProjectsTable();
+}
+
+
+async function renameProject(oldName, newName) {
+  newName = newName.trim();
+  if(!newName || newName === oldName) return;
+  try {
+    await sb.from('projects').update({name: newName}).eq('name', oldName);
+    await sb.from('transactions').update({project: newName}).eq('project', oldName);
+    const i = PROJECTS.indexOf(oldName);
+    if(i > -1) PROJECTS[i] = newName;
+    if(PROJ_BUDGETS[oldName] !== undefined) {
+      PROJ_BUDGETS[newName] = PROJ_BUDGETS[oldName];
+      delete PROJ_BUDGETS[oldName];
+    }
+    allTx.forEach(t => { if(t.project === oldName) t.project = newName; });
+    renderSettingsLists();
+    renderProjectsTable();
+    renderPnL();
+    refreshFilterDropdowns();
+  } catch(e) {
+    console.error('Rename failed:', e);
+  }
 }
 
 async function addProject() {
@@ -1469,8 +1500,16 @@ function renderSettingsLists() {
     pl.innerHTML = '';
     PROJECTS.forEach(p => {
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f0ec;font-size:12px';
-      row.innerHTML = `<span>${p}</span><button onclick="removeProject('${p.replace(/'/g,"\'")}')" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px">×</button>`;
+      row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f0f0ec;font-size:12px';
+      const safeP = p.replace(/'/g,"\'");
+      row.innerHTML = `
+        <input type="text" value="${p}" 
+          onblur="renameProject('${safeP}', this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="flex:1;font-size:12px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;outline:none;cursor:pointer"
+          onfocus="this.style.borderColor='#2563eb';this.style.background='#fff'"
+          onblurfocus="this.style.borderColor='transparent';this.style.background='transparent'">
+        <button onclick="removeProject('${safeP}', false)" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0">×</button>`;
       pl.appendChild(row);
     });
   }
@@ -1553,6 +1592,29 @@ async function updateBudget(name, val) {
   try { await sb.from('projects').update({budget}).eq('name', name); } catch(e) {}
   renderPnL();
   renderProjectsTable();
+}
+
+
+async function renameProject(oldName, newName) {
+  newName = newName.trim();
+  if(!newName || newName === oldName) return;
+  try {
+    await sb.from('projects').update({name: newName}).eq('name', oldName);
+    await sb.from('transactions').update({project: newName}).eq('project', oldName);
+    const i = PROJECTS.indexOf(oldName);
+    if(i > -1) PROJECTS[i] = newName;
+    if(PROJ_BUDGETS[oldName] !== undefined) {
+      PROJ_BUDGETS[newName] = PROJ_BUDGETS[oldName];
+      delete PROJ_BUDGETS[oldName];
+    }
+    allTx.forEach(t => { if(t.project === oldName) t.project = newName; });
+    renderSettingsLists();
+    renderProjectsTable();
+    renderPnL();
+    refreshFilterDropdowns();
+  } catch(e) {
+    console.error('Rename failed:', e);
+  }
 }
 
 async function addProject() {
