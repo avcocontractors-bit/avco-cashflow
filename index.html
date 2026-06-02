@@ -316,16 +316,15 @@ td select:hover{border-color:#ddd;background:#fafaf8}
               <col id="col-amt" style="width:100px">
               <col id="col-proj" style="width:160px">
               <col id="col-cat" style="width:160px">
-              <col id="col-sub" style="width:140px">
               <col id="col-notes" style="width:140px">
             </colgroup>
             <thead><tr>
-              <th onclick="sortBy('date')" style="cursor:pointer;user-select:none">Date <span id="sort-date"></span><div class="col-resizer" data-col="col-date"></div></th>
+              <th style="width:30px"></th><th onclick="sortBy('date')" style="cursor:pointer;user-select:none">Date <span id="sort-date"></span><div class="col-resizer" data-col="col-date"></div></th>
               <th onclick="sortBy('description')" style="cursor:pointer;user-select:none">Description <span id="sort-description"></span><div class="col-resizer" data-col="col-desc"></div></th>
               <th onclick="sortBy('amount')" style="text-align:right;cursor:pointer;user-select:none">Amount <span id="sort-amount"></span><div class="col-resizer" data-col="col-amt"></div></th>
               <th onclick="sortBy('project')" style="cursor:pointer;user-select:none">Project <span id="sort-project"></span><div class="col-resizer" data-col="col-proj"></div></th>
               <th onclick="sortBy('category')" style="cursor:pointer;user-select:none">Category <span id="sort-category"></span><div class="col-resizer" data-col="col-cat"></div></th>
-              <th onclick="sortBy('subcategory')" style="cursor:pointer;user-select:none">Subcategory <span id="sort-subcategory"></span><div class="col-resizer" data-col="col-sub"></div></th>
+              
               <th>Notes<div class="col-resizer" data-col="col-notes"></div></th>
             </tr></thead>
             <tbody id="tx-body"></tbody>
@@ -411,7 +410,7 @@ td select:hover{border-color:#ddd;background:#fafaf8}
 
       <!-- SETTINGS -->
       <div id="panel-settings" class="panel">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
 
           <!-- Projects -->
           <div class="card">
@@ -439,15 +438,7 @@ td select:hover{border-color:#ddd;background:#fafaf8}
             </div>
           </div>
 
-          <!-- Subcategories -->
-          <div class="card">
-            <div class="card-title">Subcategories</div>
-            <div id="subcategories-list"></div>
-            <div style="display:flex;gap:8px;margin-top:12px">
-              <input type="text" id="new-subcat" placeholder="Subcategory name..." style="flex:1;font-size:12px;padding:6px 8px;border:1px solid #e0e0db;border-radius:6px;outline:none">
-              <button class="btn btn-primary" onclick="addSubcat()">Add</button>
-            </div>
-          </div>
+
 
         </div>
       </div>
@@ -485,7 +476,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const PROJECTS = ['Upperline Health – Trinity FL','CLT 26-005 – Charlotte NC','Tradehome Shoes – Lake Charles LA','Nashville TI','General / Overhead','Unassigned'];
 const PROJ_BUDGETS = {'Upperline Health – Trinity FL':185000,'CLT 26-005 – Charlotte NC':92000,'Tradehome Shoes – Lake Charles LA':47000,'Nashville TI':60000,'General / Overhead':0,'Unassigned':0};
 const CATEGORIES = ['Contract Revenue','Draw Payment Received','Change Order Revenue','Reimbursements','Other Income','Owner Draw / Payroll','Subcontractor Payments','Materials & Procurement','Equipment & Tools','Permits & Fees','Insurance','Fuel & Vehicle','Office & Admin','Utilities','Other Expense','Travel & Lodging','Meals','Banking & Fees'];
-const SUBCATS = ['Lumber & Framing','Drywall & Finishes','Flooring','Tile & Stone','Paint & Coatings','Doors & Hardware','Plumbing Fixtures','Electrical Fixtures','HVAC Supplies','Fasteners & Consumables','Electrical Sub','Plumbing Sub','HVAC Sub','Framing Sub','Finish Carpentry Sub','Tile Sub','Painting Sub','Flooring Sub','Concrete Sub','General Labor','Software & Subscriptions','Printing & Office','Travel & Lodging','Meals','Banking & Fees','Other'];
+const SUBCATS = [];
 
 const SEED = [];
 let allTx = [];
@@ -607,7 +598,7 @@ function sortBy(col) {
 }
 
 function updateSortIndicators() {
-  ['date','description','amount','project','category','subcategory'].forEach(col => {
+  ['date','description','amount','project','category'].forEach(col => {
     const el = document.getElementById('sort-' + col);
     if(!el) return;
     if(col === sortCol) {
@@ -663,14 +654,13 @@ function showPage() {
     tr.dataset.id=tx.id;
     const projOpts=['',...PROJECTS].map(p=>`<option value="${p}" ${tx.project===p?'selected':''}>${p||'— project —'}</option>`).join('');
     const catOpts=['',...CATEGORIES].map(c=>`<option value="${c}" ${tx.category===c?'selected':''}>${c||'— category —'}</option>`).join('');
-    const subOpts=['',...SUBCATS].map(s=>`<option value="${s}" ${tx.subcategory===s?'selected':''}>${s||'— subcategory —'}</option>`).join('');
     tr.innerHTML=`
+      <td style="width:30px;text-align:center"><button onclick="deleteTx('${tx.id}')" style="background:none;border:none;color:#ddd;cursor:pointer;font-size:16px;padding:0;line-height:1" title="Delete transaction">×</button></td>
       <td style="white-space:nowrap;color:#999;font-size:12px">${tx.date}</td>
       <td style="max-width:260px"><input type="text" title="${tx.description}" value="${tx.description}" onchange="mark('${tx.id}','description',this.value)" style="width:100%;font-size:12px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;outline:none;cursor:pointer;color:#1a1a1a"></td>
       <td style="text-align:right" class="${pos?'amount-pos':'amount-neg'}">${fmtFull(tx.amount)}</td>
       <td><select onchange="mark('${tx.id}','project',this.value)" style="min-width:130px">${projOpts}</select></td>
       <td><select onchange="mark('${tx.id}','category',this.value)" style="min-width:140px">${catOpts}</select></td>
-      <td><select onchange="mark('${tx.id}','subcategory',this.value)" style="min-width:130px">${subOpts}</select></td>
       <td><input type="text" value="${tx.notes||''}" onchange="mark('${tx.id}','notes',this.value)" placeholder="Add note..."></td>`;
     tbody.appendChild(tr);
   });
@@ -686,6 +676,23 @@ function showPage() {
     } else if(Math.abs(i-currentPage)===3) {
       pg.appendChild(Object.assign(document.createElement('span'),{textContent:'…'}));
     }
+  }
+}
+
+
+async function deleteTx(id) {
+  if(!confirm('Delete this transaction? This cannot be undone.')) return;
+  try {
+    await sb.from('transactions').delete().eq('id', id);
+    allTx = allTx.filter(t => t.id !== id);
+    document.getElementById('tx-count').textContent = allTx.length + ' transactions';
+    document.getElementById('m-count').textContent = allTx.length.toLocaleString();
+    showPage();
+    renderDashboard();
+    renderCategories();
+    renderPnL();
+  } catch(e) {
+    alert('Delete failed: ' + e.message);
   }
 }
 
