@@ -666,7 +666,7 @@ function showPage() {
     const subOpts=['',...SUBCATS].map(s=>`<option value="${s}" ${tx.subcategory===s?'selected':''}>${s||'— subcategory —'}</option>`).join('');
     tr.innerHTML=`
       <td style="white-space:nowrap;color:#999;font-size:12px">${tx.date}</td>
-      <td style="max-width:260px"><input type="text" value="${tx.description}" onchange="mark('${tx.id}','description',this.value)" style="width:100%;font-size:12px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;outline:none;cursor:pointer;color:#1a1a1a"></td>
+      <td style="max-width:260px"><input type="text" title="${tx.description}" value="${tx.description}" onchange="mark('${tx.id}','description',this.value)" style="width:100%;font-size:12px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;outline:none;cursor:pointer;color:#1a1a1a"></td>
       <td style="text-align:right" class="${pos?'amount-pos':'amount-neg'}">${fmtFull(tx.amount)}</td>
       <td><select onchange="mark('${tx.id}','project',this.value)" style="min-width:130px">${projOpts}</select></td>
       <td><select onchange="mark('${tx.id}','category',this.value)" style="min-width:140px">${catOpts}</select></td>
