@@ -282,7 +282,6 @@ td select:hover{border-color:#ddd;background:#fafaf8}
         <div style="background:#fff;border:1px solid #e8e8e4;border-radius:8px;padding:12px 14px;margin-bottom:14px">
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
             <input type="text" id="tx-search" placeholder="Search description..." oninput="renderTx()" style="flex:2;min-width:180px;font-size:12px;padding:7px 10px;border:1px solid #e0e0db;border-radius:6px;outline:none">
-            <select id="tx-filter-month" onchange="renderTx()" style="flex:1;min-width:110px;font-size:12px;padding:7px 8px;border:1px solid #e0e0db;border-radius:6px;background:#fff"><option value="">All months</option></select>
             <select id="tx-filter-cat" onchange="renderTx()" style="flex:1;min-width:130px;font-size:12px;padding:7px 8px;border:1px solid #e0e0db;border-radius:6px;background:#fff"><option value="">All categories</option></select>
             <select id="tx-filter-proj" onchange="renderTx()" style="flex:1;min-width:130px;font-size:12px;padding:7px 8px;border:1px solid #e0e0db;border-radius:6px;background:#fff"><option value="">All projects</option></select>
           </div>
@@ -526,15 +525,16 @@ async function loadData() {
 }
 
 function populateFilters() {
-  const months = [...new Set(allTx.map(t=>t.month).filter(Boolean))].sort((a,b)=>new Date('1 '+a)-new Date('1 '+b));
-  const cats = [...new Set(allTx.map(t=>t.category).filter(Boolean))].sort();
-  const projs = [...new Set(allTx.map(t=>t.project).filter(Boolean))].sort();
-  const fm=document.getElementById('tx-filter-month');
-  months.forEach(m=>{const o=document.createElement('option');o.value=o.textContent=m;fm.appendChild(o);});
   const fc=document.getElementById('tx-filter-cat');
-  cats.forEach(c=>{const o=document.createElement('option');o.value=o.textContent=c;fc.appendChild(o);});
   const fp=document.getElementById('tx-filter-proj');
-  projs.forEach(p=>{const o=document.createElement('option');o.value=o.textContent=p;fp.appendChild(o);});
+  if(fc) {
+    fc.innerHTML='<option value="">All categories</option>';
+    CATEGORIES.forEach(c=>{const o=document.createElement('option');o.value=o.textContent=c;fc.appendChild(o);});
+  }
+  if(fp) {
+    fp.innerHTML='<option value="">All projects</option>';
+    PROJECTS.forEach(p=>{const o=document.createElement('option');o.value=o.textContent=p;fp.appendChild(o);});
+  }
 }
 
 function getFiltered() {
@@ -1045,15 +1045,7 @@ function refreshAll() {
 }
 
 function refreshFilterDropdowns() {
-  const fc = document.getElementById('tx-filter-cat');
-  const fp = document.getElementById('tx-filter-proj');
-  if(!fc || !fp) return;
-  const selCat = fc.value;
-  const selProj = fp.value;
-  fc.innerHTML = '<option value="">All categories</option>';
-  CATEGORIES.forEach(c => { const o=document.createElement('option'); o.value=o.textContent=c; if(c===selCat) o.selected=true; fc.appendChild(o); });
-  fp.innerHTML = '<option value="">All projects</option>';
-  PROJECTS.forEach(p => { const o=document.createElement('option'); o.value=o.textContent=p; if(p===selProj) o.selected=true; fp.appendChild(o); });
+  populateFilters();
 }
 
 function renderSettingsLists() {
@@ -1483,15 +1475,7 @@ function refreshAll() {
 }
 
 function refreshFilterDropdowns() {
-  const fc = document.getElementById('tx-filter-cat');
-  const fp = document.getElementById('tx-filter-proj');
-  if(!fc || !fp) return;
-  const selCat = fc.value;
-  const selProj = fp.value;
-  fc.innerHTML = '<option value="">All categories</option>';
-  CATEGORIES.forEach(c => { const o=document.createElement('option'); o.value=o.textContent=c; if(c===selCat) o.selected=true; fc.appendChild(o); });
-  fp.innerHTML = '<option value="">All projects</option>';
-  PROJECTS.forEach(p => { const o=document.createElement('option'); o.value=o.textContent=p; if(p===selProj) o.selected=true; fp.appendChild(o); });
+  populateFilters();
 }
 
 function renderSettingsLists() {
