@@ -64,10 +64,10 @@ body{font-family:'Inter',sans-serif;background:#f7f7f5;color:#1a1a1a;font-size:1
 
 /* Table */
 table{width:100%;border-collapse:collapse}
-th{text-align:left;padding:9px 10px;font-size:11px;font-weight:600;color:#999;border-bottom:1px solid #e8e8e4;text-transform:uppercase;letter-spacing:0.4px;white-space:nowrap;background:#fff}
-td{padding:8px 10px;border-bottom:1px solid #f0f0ec;vertical-align:middle}
+th{text-align:left;padding:6px 8px;font-size:10px;font-weight:600;color:#999;border-bottom:1px solid #e8e8e4;text-transform:uppercase;letter-spacing:0.4px;white-space:nowrap;background:#fff}
+td{padding:5px 8px;border-bottom:1px solid #f0f0ec;vertical-align:middle}
 tr:hover td{background:#fafaf8}
-td input,td select{font-size:12px;padding:4px 6px;border:1px solid transparent;border-radius:4px;background:transparent;width:100%;outline:none;cursor:pointer;color:#1a1a1a}
+td input,td select{font-size:12px;padding:2px 4px;border:1px solid transparent;border-radius:4px;background:transparent;width:100%;outline:none;cursor:pointer;color:#1a1a1a}
 td input:focus,td select:focus{border-color:#999;background:#fff;cursor:text}
 td select:hover{border-color:#ddd;background:#fafaf8}
 .amount-pos{color:#059669;font-weight:500}
@@ -311,12 +311,12 @@ td select:hover{border-color:#ddd;background:#fafaf8}
         <div style="overflow-x:auto;max-height:calc(100vh - 200px);overflow-y:auto">
           <table class="resizable-table" id="tx-table">
             <colgroup>
-              <col id="col-date" style="width:100px">
-              <col id="col-desc" style="width:280px">
-              <col id="col-amt" style="width:100px">
-              <col id="col-proj" style="width:160px">
-              <col id="col-cat" style="width:160px">
-              <col id="col-notes" style="width:140px">
+              <col id="col-delete" style="width:20px"><col id="col-date" style="width:85px">
+              <col id="col-desc" style="width:500px">
+              <col id="col-amt" style="width:85px">
+              <col id="col-proj" style="width:110px">
+              <col id="col-cat" style="width:120px">
+              <col id="col-notes" style="width:120px">
             </colgroup>
             <thead><tr>
               <th style="width:30px"></th><th onclick="sortBy('date')" style="cursor:pointer;user-select:none">Date <span id="sort-date"></span><div class="col-resizer" data-col="col-date"></div></th>
@@ -656,7 +656,7 @@ function showPage() {
     const catOpts=['',...CATEGORIES].map(c=>`<option value="${c}" ${tx.category===c?'selected':''}>${c||'— category —'}</option>`).join('');
     tr.innerHTML=`
       <td style="width:30px;text-align:center"><button onclick="deleteTx('${tx.id}')" style="background:none;border:none;color:#ddd;cursor:pointer;font-size:16px;padding:0;line-height:1" title="Delete transaction">×</button></td>
-      <td style="white-space:nowrap;color:#999;font-size:12px">${tx.date}</td>
+      <td style="white-space:nowrap;color:#aaa;font-size:11px">${tx.date}</td>
       <td style="max-width:260px"><input type="text" title="${tx.description}" value="${tx.description}" onchange="mark('${tx.id}','description',this.value)" style="width:100%;font-size:12px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;outline:none;cursor:pointer;color:#1a1a1a"></td>
       <td style="text-align:right" class="${pos?'amount-pos':'amount-neg'}">${fmtFull(tx.amount)}</td>
       <td><select onchange="mark('${tx.id}','project',this.value)" style="min-width:130px">${projOpts}</select></td>
