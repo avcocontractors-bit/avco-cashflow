@@ -733,7 +733,7 @@ async function importCSV(input) {
   const dsi=hdrs.findIndex(h=>h==='NAME'||h.includes('DESC'));
   const ai=hdrs.findIndex(h=>h.includes('AMOUNT')||h.includes('AMT'));
   if(di<0||dsi<0||ai<0){status.className='status error';status.textContent='Could not find DATE, NAME/DESCRIPTION, AMOUNT columns.';return;}
-  const existing=new Set(allTx.map(t=>t.date+'|'+t.description.trim()+'|'+t.amount));
+  const existing=new Set(allTx.map(t=>t.date+'|'+t.description.trim()+'|'+parseFloat(t.amount).toFixed(2)));
   const newRows=[];
   for(let i=1;i<lines.length;i++){
     const cols=lines[i].split(',').map(c=>c.trim().replace(/^"|"$/g,''));
