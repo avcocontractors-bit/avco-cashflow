@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0id2hpdGUiLz4KICA8bGluZSB4MT0iMTUiIHkxPSI0MiIgeDI9Ijg1IiB5Mj0iNDIiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8bGluZSB4MT0iMTUiIHkxPSI1OCIgeDI9Ijg1IiB5Mj0iNTgiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8cmVjdCB4PSIxOCIgeT0iMzAiIHdpZHRoPSIxNiIgaGVpZ2h0PSI0NSIgc3Ryb2tlPSIjMWExYTFhIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9IndoaXRlIi8+CiAgPHJlY3QgeD0iMzgiIHk9IjIwIiB3aWR0aD0iMTgiIGhlaWdodD0iNTUiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJ3aGl0ZSIvPgogIDxwb2x5bGluZSBwb2ludHM9IjYwLDc1IDYwLDUyIDcwLDQyIDgwLDUyIDgwLDc1IiBzdHJva2U9IiMxYTFhMWEiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0id2hpdGUiLz4KPC9zdmc+">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADVCO, Inc. Cash Flow Application</title>
+<title>ADVCO App</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
@@ -165,7 +165,7 @@ td select:hover{border-color:#ddd;background:#fafaf8}
       <rect x="260" y="155" width="30" height="135" class="ll" stroke-width="2.5" fill="white"/>
     </svg>
     <h2>ADVCO, Inc.</h2>
-    <p>Cash Flow Application</p>
+    <p>Cash Flow App</p>
     <input type="password" id="gate-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword()">
     <button class="login-btn" onclick="checkPassword()">Sign in</button>
     <div class="login-error" id="gate-error"></div>
@@ -666,7 +666,7 @@ function showPage() {
     const subOpts=['',...SUBCATS].map(s=>`<option value="${s}" ${tx.subcategory===s?'selected':''}>${s||'— subcategory —'}</option>`).join('');
     tr.innerHTML=`
       <td style="white-space:nowrap;color:#999;font-size:12px">${tx.date}</td>
-      <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${tx.description}">${tx.description}</td>
+      <td style="max-width:260px"><input type="text" value="${tx.description}" onchange="mark('${tx.id}','description',this.value)" style="width:100%;font-size:12px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;outline:none;cursor:pointer;color:#1a1a1a"></td>
       <td style="text-align:right" class="${pos?'amount-pos':'amount-neg'}">${fmtFull(tx.amount)}</td>
       <td><select onchange="mark('${tx.id}','project',this.value)" style="min-width:130px">${projOpts}</select></td>
       <td><select onchange="mark('${tx.id}','category',this.value)" style="min-width:140px">${catOpts}</select></td>
@@ -982,7 +982,7 @@ function generatePDF() {
   </head><body>
   <div class="header">
     <div>
-      <h1>ADVCO, Inc. Cash Flow Report</h1>
+      <h1>ADVCO App — Cash Flow Report</h1>
       <p>${dateLabel}</p>
     </div>
     <div style="text-align:right;color:#888;font-size:10px">
@@ -1005,7 +1005,7 @@ function generatePDF() {
 
   <div class="section"><h2>Transactions ${filtered.length > 500 ? '(first 500 shown)' : ''}</h2><table><thead><tr><th>Date</th><th>Description</th><th style="text-align:right">Amount</th><th>Project</th><th>Category</th><th>Notes</th></tr></thead><tbody>${txRows}</tbody></table></div>
 
-  <div class="footer"><span>ADVCO, Inc. — Confidential</span><span>AVCO Cash Flow Application</span></div>
+  <div class="footer"><span>ADVCO, Inc. — Confidential</span><span>ADVCO App</span></div>
   </body></html>`;
 
   const win = window.open('', '_blank');
@@ -1389,7 +1389,7 @@ function generatePDF() {
   </head><body>
   <div class="header">
     <div>
-      <h1>ADVCO, Inc. Cash Flow Report</h1>
+      <h1>ADVCO App — Cash Flow Report</h1>
       <p>${dateLabel}</p>
     </div>
     <div style="text-align:right;color:#888;font-size:10px">
@@ -1412,7 +1412,7 @@ function generatePDF() {
 
   <div class="section"><h2>Transactions ${filtered.length > 500 ? '(first 500 shown)' : ''}</h2><table><thead><tr><th>Date</th><th>Description</th><th style="text-align:right">Amount</th><th>Project</th><th>Category</th><th>Notes</th></tr></thead><tbody>${txRows}</tbody></table></div>
 
-  <div class="footer"><span>ADVCO, Inc. — Confidential</span><span>AVCO Cash Flow Application</span></div>
+  <div class="footer"><span>ADVCO, Inc. — Confidential</span><span>ADVCO App</span></div>
   </body></html>`;
 
   const win = window.open('', '_blank');
