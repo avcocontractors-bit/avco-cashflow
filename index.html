@@ -908,14 +908,18 @@ async function addProject() {
 }
 
 async function removeProject(name, fromTable) {
-  if(!confirm('Remove project "' + name + '"?')) return;
+  if(!confirm('Remove project "' + name + '" and clear it from all transactions?')) return;
   try { await sb.from('projects').delete().eq('name', name); } catch(e) {}
+  try { await sb.from('transactions').update({project: null}).eq('project', name); } catch(e) {}
+  allTx.forEach(t => { if(t.project === name) t.project = null; });
   const i = PROJECTS.indexOf(name);
   if(i > -1) PROJECTS.splice(i, 1);
   delete PROJ_BUDGETS[name];
   renderSettingsLists();
   renderProjectsTable();
   renderPnL();
+  renderDashboard();
+  renderTx();
   refreshFilterDropdowns();
 }
 
@@ -934,13 +938,16 @@ async function addCategory() {
 }
 
 async function removeCategory(name) {
-  if(!confirm('Remove category "' + name + '"?')) return;
+  if(!confirm('Remove category "' + name + '" and clear it from all transactions?')) return;
   try { await sb.from('categories').delete().eq('name', name); } catch(e) {}
+  try { await sb.from('transactions').update({category: null}).eq('category', name); } catch(e) {}
+  allTx.forEach(t => { if(t.category === name) t.category = null; });
   const i = CATEGORIES.indexOf(name);
   if(i > -1) CATEGORIES.splice(i, 1);
   renderSettingsLists();
   renderCategories();
   renderDashboard();
+  renderTx();
   refreshFilterDropdowns();
 }
 
@@ -1238,14 +1245,18 @@ async function addProject() {
 }
 
 async function removeProject(name, fromTable) {
-  if(!confirm('Remove project "' + name + '"?')) return;
+  if(!confirm('Remove project "' + name + '" and clear it from all transactions?')) return;
   try { await sb.from('projects').delete().eq('name', name); } catch(e) {}
+  try { await sb.from('transactions').update({project: null}).eq('project', name); } catch(e) {}
+  allTx.forEach(t => { if(t.project === name) t.project = null; });
   const i = PROJECTS.indexOf(name);
   if(i > -1) PROJECTS.splice(i, 1);
   delete PROJ_BUDGETS[name];
   renderSettingsLists();
   renderProjectsTable();
   renderPnL();
+  renderDashboard();
+  renderTx();
   refreshFilterDropdowns();
 }
 
@@ -1264,13 +1275,16 @@ async function addCategory() {
 }
 
 async function removeCategory(name) {
-  if(!confirm('Remove category "' + name + '"?')) return;
+  if(!confirm('Remove category "' + name + '" and clear it from all transactions?')) return;
   try { await sb.from('categories').delete().eq('name', name); } catch(e) {}
+  try { await sb.from('transactions').update({category: null}).eq('category', name); } catch(e) {}
+  allTx.forEach(t => { if(t.category === name) t.category = null; });
   const i = CATEGORIES.indexOf(name);
   if(i > -1) CATEGORIES.splice(i, 1);
   renderSettingsLists();
   renderCategories();
   renderDashboard();
+  renderTx();
   refreshFilterDropdowns();
 }
 
