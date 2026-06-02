@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0id2hpdGUiLz4KICA8bGluZSB4MT0iMTUiIHkxPSI0MiIgeDI9Ijg1IiB5Mj0iNDIiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8bGluZSB4MT0iMTUiIHkxPSI1OCIgeDI9Ijg1IiB5Mj0iNTgiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8cmVjdCB4PSIxOCIgeT0iMzAiIHdpZHRoPSIxNiIgaGVpZ2h0PSI0NSIgc3Ryb2tlPSIjMWExYTFhIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9IndoaXRlIi8+CiAgPHJlY3QgeD0iMzgiIHk9IjIwIiB3aWR0aD0iMTgiIGhlaWdodD0iNTUiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJ3aGl0ZSIvPgogIDxwb2x5bGluZSBwb2ludHM9IjYwLDc1IDYwLDUyIDcwLDQyIDgwLDUyIDgwLDc1IiBzdHJva2U9IiMxYTFhMWEiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0id2hpdGUiLz4KPC9zdmc+">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ADVCO, Inc. Cash Flow Application</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -117,9 +118,59 @@ td select:hover{border-color:#ddd;background:#fafaf8}
   background: transparent;
 }
 .col-resizer:hover, .col-resizer.resizing { background: #2563eb; opacity: 0.5; }
+
+#password-gate {
+  position: fixed; inset: 0; background: #f7f7f5;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+#password-gate.hidden { display: none; }
+.login-box {
+  background: #fff; border: 1px solid #e8e8e4; border-radius: 12px;
+  padding: 40px; width: 340px; text-align: center;
+}
+.login-box svg { margin-bottom: 16px; }
+.login-box h2 { font-size: 16px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+.login-box p { font-size: 12px; color: #999; margin-bottom: 24px; }
+.login-box input {
+  width: 100%; padding: 10px 14px; font-size: 13px; font-family: inherit;
+  border: 1px solid #e0e0db; border-radius: 8px; outline: none;
+  margin-bottom: 10px; text-align: center; letter-spacing: 2px;
+}
+.login-box input:focus { border-color: #2563eb; }
+.login-box input.error { border-color: #ef4444; }
+.login-box .login-btn {
+  width: 100%; padding: 10px; background: #1a1a1a; color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-family: inherit;
+  font-weight: 500; cursor: pointer; transition: background 0.15s;
+}
+.login-box .login-btn:hover { background: #333; }
+.login-box .login-error { font-size: 12px; color: #ef4444; margin-top: 8px; min-height: 16px; }
 </style>
 </head>
 <body>
+
+
+<div id="password-gate">
+  <div class="login-box">
+    <svg width="48" height="48" viewBox="0 0 400 390" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 16px">
+      <style>.ll{stroke:#1a1a1a;fill:none;stroke-linecap:round}</style>
+      <line x1="60" y1="155" x2="340" y2="155" class="ll" stroke-width="0.7"/>
+      <line x1="40" y1="210" x2="360" y2="210" class="ll" stroke-width="0.7"/>
+      <line x1="120" y1="55" x2="120" y2="305" class="ll" stroke-width="0.7"/>
+      <line x1="270" y1="75" x2="270" y2="290" class="ll" stroke-width="0.7"/>
+      <rect x="103" y="125" width="38" height="165" class="ll" stroke-width="2.5" fill="white"/>
+      <rect x="153" y="95" width="42" height="195" class="ll" stroke-width="2.5" fill="white"/>
+      <polyline points="210,290 210,230 230,205 250,230 250,290" class="ll" stroke-width="2.5" fill="white"/>
+      <rect x="260" y="155" width="30" height="135" class="ll" stroke-width="2.5" fill="white"/>
+    </svg>
+    <h2>ADVCO, Inc.</h2>
+    <p>Cash Flow Application</p>
+    <input type="password" id="gate-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="login-btn" onclick="checkPassword()">Sign in</button>
+    <div class="login-error" id="gate-error"></div>
+  </div>
+</div>
 
 <div class="layout">
   <div class="sidebar">
@@ -135,6 +186,34 @@ td select:hover{border-color:#ddd;background:#fafaf8}
   background: transparent;
 }
 .col-resizer:hover, .col-resizer.resizing { background: #2563eb; opacity: 0.5; }
+
+#password-gate {
+  position: fixed; inset: 0; background: #f7f7f5;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+#password-gate.hidden { display: none; }
+.login-box {
+  background: #fff; border: 1px solid #e8e8e4; border-radius: 12px;
+  padding: 40px; width: 340px; text-align: center;
+}
+.login-box svg { margin-bottom: 16px; }
+.login-box h2 { font-size: 16px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+.login-box p { font-size: 12px; color: #999; margin-bottom: 24px; }
+.login-box input {
+  width: 100%; padding: 10px 14px; font-size: 13px; font-family: inherit;
+  border: 1px solid #e0e0db; border-radius: 8px; outline: none;
+  margin-bottom: 10px; text-align: center; letter-spacing: 2px;
+}
+.login-box input:focus { border-color: #2563eb; }
+.login-box input.error { border-color: #ef4444; }
+.login-box .login-btn {
+  width: 100%; padding: 10px; background: #1a1a1a; color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-family: inherit;
+  font-weight: 500; cursor: pointer; transition: background 0.15s;
+}
+.login-box .login-btn:hover { background: #333; }
+.login-box .login-error { font-size: 12px; color: #ef4444; margin-top: 8px; min-height: 16px; }
 </style>
 <line x1="60" y1="155" x2="340" y2="155" class="ll" stroke-width="0.7"/>
 <line x1="40" y1="210" x2="360" y2="210" class="ll" stroke-width="0.7"/>
@@ -462,7 +541,6 @@ function populateFilters() {
 function getFiltered() {
   const q      = document.getElementById('tx-search').value.toLowerCase();
   const cat    = document.getElementById('tx-filter-cat').value;
-  const month  = document.getElementById('tx-filter-month').value;
   const proj   = document.getElementById('tx-filter-proj').value;
   const type   = document.getElementById('tx-filter-type').value;
   const tagged = document.getElementById('tx-filter-tagged').value;
@@ -474,7 +552,6 @@ function getFiltered() {
   return allTx.filter(t => {
     if(q && !t.description.toLowerCase().includes(q)) return false;
     if(cat && t.category !== cat) return false;
-    if(month && t.month !== month) return false;
     if(proj && t.project !== proj) return false;
     if(type === 'income' && t.amount <= 0) return false;
     if(type === 'expense' && t.amount >= 0) return false;
@@ -504,7 +581,6 @@ function getFiltered() {
 function clearFilters() {
   document.getElementById('tx-search').value = '';
   document.getElementById('tx-filter-cat').value = '';
-  document.getElementById('tx-filter-month').value = '';
   document.getElementById('tx-filter-proj').value = '';
   document.getElementById('tx-filter-type').value = '';
   document.getElementById('tx-filter-tagged').value = '';
@@ -614,26 +690,43 @@ function showPage() {
   }
 }
 
-function mark(id,field,value) {
-  if(!pendingChanges[id]) pendingChanges[id]={};
-  pendingChanges[id][field]=value;
-  const tx=allTx.find(t=>t.id===id);
-  if(tx) tx[field]=value;
-  document.getElementById('save-status').textContent=Object.keys(pendingChanges).length+' unsaved';
+async function mark(id, field, value) {
+  // Update local data immediately
+  const tx = allTx.find(t => t.id === id);
+  if(tx) tx[field] = value;
+
+  const statusEl = document.getElementById('save-status');
+  statusEl.textContent = 'Saving...';
+  statusEl.style.color = '#999';
+
+  try {
+    await sb.from('transactions').update({[field]: value}).eq('id', id);
+    statusEl.textContent = '✓ Saved';
+    statusEl.style.color = '#059669';
+    setTimeout(() => { statusEl.textContent = ''; }, 2000);
+    // Refresh charts if category or project changed
+    if(field === 'category' || field === 'project') {
+      renderCategories(); renderPnL(); renderDashboard();
+    }
+  } catch(e) {
+    // Queue for retry
+    if(!pendingChanges[id]) pendingChanges[id] = {};
+    pendingChanges[id][field] = value;
+    statusEl.textContent = '⚠ Save failed — will retry';
+    statusEl.style.color = '#ef4444';
+  }
 }
 
 async function saveChanges() {
-  const ids=Object.keys(pendingChanges);
-  if(!ids.length) {document.getElementById('save-status').textContent='Nothing to save';return;}
-  document.getElementById('save-status').textContent='Saving...';
-  let saved=0;
+  const ids = Object.keys(pendingChanges);
+  if(!ids.length) return;
   for(const id of ids) {
-    try {await sb.from('transactions').update(pendingChanges[id]).eq('id',id);saved++;} catch(e) {}
+    try {
+      await sb.from('transactions').update(pendingChanges[id]).eq('id', id);
+      delete pendingChanges[id];
+    } catch(e) {}
   }
-  pendingChanges={};
-  document.getElementById('save-status').textContent='✓ Saved '+saved+' rows';
-  renderCategories();renderPnL();renderDashboard();
-  setTimeout(()=>document.getElementById('save-status').textContent='',3000);
+  renderCategories(); renderPnL(); renderDashboard();
 }
 
 function renderDashboard() {
@@ -828,6 +921,7 @@ function generatePDF() {
   const reportDate = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
   const pdfHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0id2hpdGUiLz4KICA8bGluZSB4MT0iMTUiIHkxPSI0MiIgeDI9Ijg1IiB5Mj0iNDIiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8bGluZSB4MT0iMTUiIHkxPSI1OCIgeDI9Ijg1IiB5Mj0iNTgiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8cmVjdCB4PSIxOCIgeT0iMzAiIHdpZHRoPSIxNiIgaGVpZ2h0PSI0NSIgc3Ryb2tlPSIjMWExYTFhIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9IndoaXRlIi8+CiAgPHJlY3QgeD0iMzgiIHk9IjIwIiB3aWR0aD0iMTgiIGhlaWdodD0iNTUiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJ3aGl0ZSIvPgogIDxwb2x5bGluZSBwb2ludHM9IjYwLDc1IDYwLDUyIDcwLDQyIDgwLDUyIDgwLDc1IiBzdHJva2U9IiMxYTFhMWEiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0id2hpdGUiLz4KPC9zdmc+">
   <title>ADVCO Cash Flow Report</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -857,6 +951,34 @@ function generatePDF() {
   background: transparent;
 }
 .col-resizer:hover, .col-resizer.resizing { background: #2563eb; opacity: 0.5; }
+
+#password-gate {
+  position: fixed; inset: 0; background: #f7f7f5;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+#password-gate.hidden { display: none; }
+.login-box {
+  background: #fff; border: 1px solid #e8e8e4; border-radius: 12px;
+  padding: 40px; width: 340px; text-align: center;
+}
+.login-box svg { margin-bottom: 16px; }
+.login-box h2 { font-size: 16px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+.login-box p { font-size: 12px; color: #999; margin-bottom: 24px; }
+.login-box input {
+  width: 100%; padding: 10px 14px; font-size: 13px; font-family: inherit;
+  border: 1px solid #e0e0db; border-radius: 8px; outline: none;
+  margin-bottom: 10px; text-align: center; letter-spacing: 2px;
+}
+.login-box input:focus { border-color: #2563eb; }
+.login-box input.error { border-color: #ef4444; }
+.login-box .login-btn {
+  width: 100%; padding: 10px; background: #1a1a1a; color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-family: inherit;
+  font-weight: 500; cursor: pointer; transition: background 0.15s;
+}
+.login-box .login-btn:hover { background: #333; }
+.login-box .login-error { font-size: 12px; color: #ef4444; margin-top: 8px; min-height: 16px; }
 </style>
   </head><body>
   <div class="header">
@@ -1099,6 +1221,37 @@ function removeSubcat(name) {
   renderSettingsLists();
 }
 
+
+// ── Password gate ─────────────────────────────────────────────────────────────
+const APP_PASSWORD = 'avco2026';
+const SESSION_KEY  = 'avco_cf_auth';
+
+function checkPassword() {
+  const input = document.getElementById('gate-input');
+  const val   = input.value;
+  if(val === APP_PASSWORD) {
+    localStorage.setItem(SESSION_KEY, btoa(APP_PASSWORD));
+    document.getElementById('password-gate').classList.add('hidden');
+    input.classList.remove('error');
+    document.getElementById('gate-error').textContent = '';
+  } else {
+    input.classList.add('error');
+    document.getElementById('gate-error').textContent = 'Incorrect password';
+    input.value = '';
+    input.focus();
+  }
+}
+
+function initAuth() {
+  const stored = localStorage.getItem(SESSION_KEY);
+  if(stored && stored === btoa(APP_PASSWORD)) {
+    document.getElementById('password-gate').classList.add('hidden');
+  } else {
+    document.getElementById('gate-input').focus();
+  }
+}
+
+initAuth();
 loadData();
 loadSettings();
   }catch(e){
@@ -1175,6 +1328,7 @@ function generatePDF() {
   const reportDate = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
   const pdfHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0id2hpdGUiLz4KICA8bGluZSB4MT0iMTUiIHkxPSI0MiIgeDI9Ijg1IiB5Mj0iNDIiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8bGluZSB4MT0iMTUiIHkxPSI1OCIgeDI9Ijg1IiB5Mj0iNTgiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8cmVjdCB4PSIxOCIgeT0iMzAiIHdpZHRoPSIxNiIgaGVpZ2h0PSI0NSIgc3Ryb2tlPSIjMWExYTFhIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9IndoaXRlIi8+CiAgPHJlY3QgeD0iMzgiIHk9IjIwIiB3aWR0aD0iMTgiIGhlaWdodD0iNTUiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJ3aGl0ZSIvPgogIDxwb2x5bGluZSBwb2ludHM9IjYwLDc1IDYwLDUyIDcwLDQyIDgwLDUyIDgwLDc1IiBzdHJva2U9IiMxYTFhMWEiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0id2hpdGUiLz4KPC9zdmc+">
   <title>ADVCO Cash Flow Report</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1204,6 +1358,34 @@ function generatePDF() {
   background: transparent;
 }
 .col-resizer:hover, .col-resizer.resizing { background: #2563eb; opacity: 0.5; }
+
+#password-gate {
+  position: fixed; inset: 0; background: #f7f7f5;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+#password-gate.hidden { display: none; }
+.login-box {
+  background: #fff; border: 1px solid #e8e8e4; border-radius: 12px;
+  padding: 40px; width: 340px; text-align: center;
+}
+.login-box svg { margin-bottom: 16px; }
+.login-box h2 { font-size: 16px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+.login-box p { font-size: 12px; color: #999; margin-bottom: 24px; }
+.login-box input {
+  width: 100%; padding: 10px 14px; font-size: 13px; font-family: inherit;
+  border: 1px solid #e0e0db; border-radius: 8px; outline: none;
+  margin-bottom: 10px; text-align: center; letter-spacing: 2px;
+}
+.login-box input:focus { border-color: #2563eb; }
+.login-box input.error { border-color: #ef4444; }
+.login-box .login-btn {
+  width: 100%; padding: 10px; background: #1a1a1a; color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-family: inherit;
+  font-weight: 500; cursor: pointer; transition: background 0.15s;
+}
+.login-box .login-btn:hover { background: #333; }
+.login-box .login-error { font-size: 12px; color: #ef4444; margin-top: 8px; min-height: 16px; }
 </style>
   </head><body>
   <div class="header">
@@ -1446,6 +1628,37 @@ function removeSubcat(name) {
   renderSettingsLists();
 }
 
+
+// ── Password gate ─────────────────────────────────────────────────────────────
+const APP_PASSWORD = 'avco2026';
+const SESSION_KEY  = 'avco_cf_auth';
+
+function checkPassword() {
+  const input = document.getElementById('gate-input');
+  const val   = input.value;
+  if(val === APP_PASSWORD) {
+    localStorage.setItem(SESSION_KEY, btoa(APP_PASSWORD));
+    document.getElementById('password-gate').classList.add('hidden');
+    input.classList.remove('error');
+    document.getElementById('gate-error').textContent = '';
+  } else {
+    input.classList.add('error');
+    document.getElementById('gate-error').textContent = 'Incorrect password';
+    input.value = '';
+    input.focus();
+  }
+}
+
+function initAuth() {
+  const stored = localStorage.getItem(SESSION_KEY);
+  if(stored && stored === btoa(APP_PASSWORD)) {
+    document.getElementById('password-gate').classList.add('hidden');
+  } else {
+    document.getElementById('gate-input').focus();
+  }
+}
+
+initAuth();
 loadData();
 loadSettings();
 </script>
