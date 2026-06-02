@@ -380,10 +380,13 @@ td select:hover{border-color:#ddd;background:#fafaf8}
         <div class="card">
           <div class="card-title">Import new transactions</div>
           <div id="import-status"></div>
-          <div class="upload-zone" onclick="document.getElementById('csv-file').click()">
+          <div class="upload-zone" id="drop-zone" onclick="document.getElementById('csv-file').click()"
+            ondragover="event.preventDefault();this.style.borderColor='#2563eb';this.style.background='#eff6ff'"
+            ondragleave="this.style.borderColor='';this.style.background=''"
+            ondrop="event.preventDefault();this.style.borderColor='';this.style.background='';handleDrop(event)">
             <div class="upload-icon">📂</div>
-            <h3>Select your bank CSV export</h3>
-            <p>Columns: DATE, DESCRIPTION, AMOUNT &nbsp;·&nbsp; Duplicates skipped automatically</p>
+            <h3>Click to select or drag & drop your CSV</h3>
+            <p>US Bank format supported directly &nbsp;·&nbsp; Duplicates skipped automatically</p>
           </div>
           <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="importCSV(this)">
           <div style="margin-top:16px;padding:14px;background:#f7f7f5;border-radius:6px;font-size:12px;color:#888;line-height:1.9;border:1px solid #e8e8e4">
@@ -719,6 +722,20 @@ function renderPnL() {
     <td class="green">${fmt(totRev)}</td><td class="red">${fmt(totCost)}</td>
     <td style="font-weight:600" class="${totNet>=0?'green':'red'}">${fmt(totNet)}</td>
     <td>${totMargin}%</td><td>—</td>`;
+}
+
+
+function handleDrop(e) {
+  const file = e.dataTransfer.files[0];
+  if(!file) return;
+  if(!file.name.endsWith('.csv')) {
+    const status = document.getElementById('import-status');
+    status.className = 'status error';
+    status.textContent = 'Please drop a .csv file.';
+    return;
+  }
+  // Create a fake input-like object and call importCSV
+  importCSV({files: [file], value: ''});
 }
 
 async function importCSV(input) {
@@ -1089,7 +1106,7 @@ loadSettings();
     status.className='status success';status.textContent=`✓ Added ${newRows.length} transactions (local)`;
     renderDashboard();renderTx();renderCategories();renderPnL();
   }
-  input.value='';
+  try { input.value=''; } catch(e) {}
 }
 
 function nav(id,el) {
